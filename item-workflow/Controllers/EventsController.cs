@@ -25,7 +25,7 @@ namespace item_workflow.Controllers
         public async Task<IActionResult> Post(string eventName, string eventKey, [FromBody] Item itemData)
         {
             _logger.LogInformation("Event: {eventName}, {eventKey}", eventName, eventKey);
-            await _workflowService.PublishEvent(eventName, eventKey, itemData.Name);
+            await _workflowService.PublishEvent(eventName, eventKey, itemData.ApprovalStatus);
             return Ok();
         }
 

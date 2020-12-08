@@ -19,7 +19,6 @@ namespace item_workflow.Controllers
         private readonly IWorkflowController _workflowService;
         private readonly IPersistenceProvider _workflowStore;
 
-
         public ItemWorkflowController(ILogger<ItemWorkflowController> logger, IPersistenceProvider workflowStore, IWorkflowController workflowService)
         {
             _workflowService = workflowService;
@@ -28,12 +27,11 @@ namespace item_workflow.Controllers
 
         }
 
-
-
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
             var result = await _workflowStore.GetWorkflowInstance(id);
+       
             _logger.LogInformation("Workflow Instance: {result}", result);
 
             return Ok("Workflow Instance: {result}" + result);
@@ -47,7 +45,7 @@ namespace item_workflow.Controllers
             _logger.LogInformation("Starting Workflow: {workflowName}", workflowName);
             var workflowId = _workflowService.StartWorkflow(workflowName, itemData).Result;
 
-            return Ok("WorkflowId: {workflowId}" + workflowId);
+            return Ok("WorkflowId: " + workflowId);
         }
 
     }

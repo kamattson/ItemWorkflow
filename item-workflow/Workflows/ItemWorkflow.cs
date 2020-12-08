@@ -22,11 +22,13 @@ namespace item_workflow.Workflows
 
             var branch1 = builder.CreateBranch()
                 .StartWith<PricingAutoAssign>()
-                    .Input(step => step.Message, data => "--- Start PricingAutoAssign Step-------")
-                .WaitFor("ApprovePCT", data => "0")
-                     .Output(data => data.Name, step => step.EventData)
+                    .Input(step => step.CalcPrice, data => data.Price)
+                    .Input(step => step.Vendor, data => data.Vendor)
+                    .Output(data => data.Price, step => step.CalcPrice)
+                .WaitFor("ApprovePCT", (data, context) => context.Workflow.Id, data => DateTime.Now)
+                     .Output(data => data.ApprovalStatus, step => step.EventData)
                 .Then<CustomMessage>()
-                    .Input(step => step.Message, data => "The data from the event is " + data.Name);
+                    .Input(step => step.Message, data => "The vendor from the event is " + data.Vendor);
 
             var branch2 = builder.CreateBranch()
                 .StartWith<MerchantApproval>()
@@ -36,7 +38,6 @@ namespace item_workflow.Workflows
 
             builder
                 .StartWith(context => ExecutionResult.Next())
-
                 .Decide(data => data.ArticleSourceFlag)
                     .Branch((data, outcome) => data.ArticleSourceFlag == "A", branch1)
                     .Branch((data, outcome) => data.ArticleSourceFlag == "B", branch2)

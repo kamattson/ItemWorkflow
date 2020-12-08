@@ -1,7 +1,11 @@
-SELECT * FROM wfc.Event;
-SELECT * FROM wfc.Workflow;
+use WorkflowCore
 
 SELECT *
-FROM wfc.Subscription;
+FROM
+    INFORMATION_SCHEMA.TABLES;
+GO
 
-select * from dbo.__EFMigrationsHistory
+SELECT * FROM wfc.Event;
+SELECT * FROM wfc.Workflow;
+SELECT * FROM wfc.Subscription;
+SELECT * FROM wfc.ExecutionPointer;
