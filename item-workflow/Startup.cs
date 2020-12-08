@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WorkflowCore.Interface;
+using WorkflowCore.Persistence.SqlServer;
+using Serilog;
 
 namespace item_workflow
 {
@@ -22,6 +24,7 @@ namespace item_workflow
     {
         public Startup(IConfiguration configuration)
         {
+            Log.Information("[Startup] (CTOR)");
             Configuration = configuration;
         }
 
@@ -38,8 +41,8 @@ namespace item_workflow
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
-            //services.AddWorkflow(x => x.UseSqlServer(@"Server=(local);Database=WorkflowCore;user id=sa;password=***"));
-            services.AddWorkflow();
+            services.AddWorkflow(x => x.UseSqlServer(Configuration.GetConnectionString("WorkflowDB"), true, true));
+            //services.AddWorkflow();
 
             services.AddSwaggerGen();
         }
@@ -76,11 +79,12 @@ namespace item_workflow
             host.RegisterWorkflow<ItemWorkflow, Item>();
             host.Start();
 
+            Log.Information("[Workflow Registered] (ItemWorkflow)");
 
-            var initialData = new Item();
-            var workflowId = host.StartWorkflow("ItemWorkflow", 1, initialData).Result;
+            //var initialData = new Item();
+            //var workflowId = host.StartWorkflow("ItemWorkflow", 1, initialData).Result;
 
-            Console.Write("workflowId="+workflowId);
+
         }
     }
 }

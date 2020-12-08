@@ -5,21 +5,24 @@ CREATE TABLE Item
 (
     ItemId INT NOT NULL PRIMARY KEY,
     Name [NVARCHAR] (50) NOT NULL,
-    Vendor [NVARCHAR] (50) NOT NULL
+    ArticleSourceFlag [NVARCHAR] (1) NOT NULL,
+    Vendor [NVARCHAR] (50) NOT NULL, 
+    LastUpdateDate [Datetime]
+NOT NULL
 )
 
 INSERT INTO Item
-    ([ItemId],[Name],[Vendor])
+    ([ItemId],[Name], [ArticleSourceFlag], [Vendor], [LastUpdateDate])
 VALUES
-    ( 1, N'Saw', N'Craftsman'),
-    ( 2, N'Nailer', N'Dewalt'),
-    ( 3, N'Drill', N'Milwaukee'),
-    ( 4, N'Tape Measure', N'Stanley')
+    ( 1, N'Saw', N'A', N'Craftsman', CURRENT_TIMESTAMP),
+    ( 2, N'Nailer', N'B', N'Dewalt', CURRENT_TIMESTAMP),
+    ( 3, N'Drill', N'D', N'Milwaukee', CURRENT_TIMESTAMP),
+    ( 4, N'Tape Measure', N'A', N'Stanley', CURRENT_TIMESTAMP)
 GO
--- Query the total count of employees
+
 SELECT COUNT(*) as ItemCount
 FROM dbo.Item;
--- Query all employee information
-SELECT i.ItemId, i.Name, i.Vendor
+
+SELECT i.ItemId, i.Name, i.ArticleSourceFlag, i.Vendor, i.LastUpdateDate
 FROM dbo.Item as i
 GO
