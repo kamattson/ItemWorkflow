@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "item-workflow", "item-workflow\item-workflow.csproj", "{50FFE786-F2E0-4D8B-8000-4A1F14AE4425}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "item-workflow.tests", "item-workflow.tests\item-workflow.tests.csproj", "{61FF8EA1-51ED-4DA3-82B4-6B06C7FD38C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{50FFE786-F2E0-4D8B-8000-4A1F14AE4425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50FFE786-F2E0-4D8B-8000-4A1F14AE4425}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50FFE786-F2E0-4D8B-8000-4A1F14AE4425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61FF8EA1-51ED-4DA3-82B4-6B06C7FD38C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61FF8EA1-51ED-4DA3-82B4-6B06C7FD38C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61FF8EA1-51ED-4DA3-82B4-6B06C7FD38C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61FF8EA1-51ED-4DA3-82B4-6B06C7FD38C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
