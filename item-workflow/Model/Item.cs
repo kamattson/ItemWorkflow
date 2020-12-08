@@ -9,6 +9,7 @@ namespace item_workflow.Model
         public string Name { get; set; }
         public string ArticleSourceFlag { get; set; }
         public string Vendor { get; set; }
+        public string ApprovalStatus { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime LastUpdateDate { get; set; }
 

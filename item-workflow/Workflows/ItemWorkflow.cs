@@ -18,12 +18,11 @@ namespace item_workflow.Workflows
         public void Build(IWorkflowBuilder<Item> builder)
         {
 
-            Log.Information("------ In workflow build ---------- ");
-
+            Log.Information("[Workflow] Build: {Id}", Id);
 
             var branch1 = builder.CreateBranch()
                 .StartWith<PricingAutoAssign>()
-                    .Input(step => step.Message, data => "hi from 1")
+                    .Input(step => step.Message, data => "--- Start PricingAutoAssign Step-------")
                 .WaitFor("ApprovePCT", data => "0")
                      .Output(data => data.Name, step => step.EventData)
                 .Then<CustomMessage>()
@@ -31,9 +30,9 @@ namespace item_workflow.Workflows
 
             var branch2 = builder.CreateBranch()
                 .StartWith<MerchantApproval>()
-                    .Input(step => step.Message, data => "hi from 2")
+                    .Input(step => step.Message, data => "---- Start Merchant Approval Step-------")
                 .Then<CustomMessage>()
-                    .Input(step => step.Message, data => "bye from 2");
+                    .Input(step => step.Message, data => "-----Complete Merchant Approval Step ------");
 
             builder
                 .StartWith(context => ExecutionResult.Next())
@@ -43,16 +42,6 @@ namespace item_workflow.Workflows
                     .Branch((data, outcome) => data.ArticleSourceFlag == "B", branch2)
                     .Branch((data, outcome) => data.ArticleSourceFlag == "D", branch2);
 
-
-
-                    /*
-                .Then<PricingAutoAssign>()
-                .WaitFor("ApprovePCT", data => "0")
-                     .Output(data => data.Name, step => step.EventData)
-                .Then<CustomMessage>() 
-                    .Input(step => step.Message, data => "The data from the event is " + data.Name)
-                .Then(context => Log.Information("workflow complete"));
-                    */
         }
 
     }
