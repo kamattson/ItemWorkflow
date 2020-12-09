@@ -124,6 +124,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+workflow.code-workspace
 
 # StyleCop
 StyleCopReport.xml

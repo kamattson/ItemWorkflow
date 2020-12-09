@@ -34,6 +34,9 @@ namespace item_workflow
         public void ConfigureServices(IServiceCollection services)
         {
 
+            Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
+
             services.AddDbContext<TestDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TestDB")));
             services.AddControllers();
        
