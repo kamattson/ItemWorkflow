@@ -16,6 +16,7 @@ namespace item_workflow.tests.Workflow
         {
             Output = (Input1 + Input2);
             return ExecutionResult.Next();
+
         }
     }
 }

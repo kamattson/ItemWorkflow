@@ -14,6 +14,7 @@ namespace item_workflow.tests.Workflow
                     .Input(step => step.Input1, data => data.Value1)
                     .Input(step => step.Input2, data => data.Value2)
                     .Output(data => data.Value3, step => step.Output);
+
         }
     }
 }
