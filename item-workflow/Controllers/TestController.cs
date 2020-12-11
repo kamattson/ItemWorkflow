@@ -20,12 +20,12 @@ namespace item_workflow.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        private readonly TestDbContext _testDbContext;
+        private readonly ItemDbContext _itemDbContext;
 
-        public TestController(ILogger<TestController> logger, TestDbContext testDbContext)
+        public TestController(ILogger<TestController> logger, ItemDbContext itemDbContext)
         {
             _logger = logger;
-            _testDbContext = testDbContext;
+            _itemDbContext = itemDbContext;
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace item_workflow.Controllers
         {
             _logger.LogInformation("this is hello - ----------");
 
-            return Ok(await _testDbContext.Item.ToListAsync());
+            return Ok(await _itemDbContext.Item.ToListAsync());
 
             //return "hello";
         }

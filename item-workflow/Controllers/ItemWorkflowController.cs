@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using item_workflow.Database;
 using item_workflow.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -18,12 +19,18 @@ namespace item_workflow.Controllers
         private readonly ILogger<ItemWorkflowController> _logger;
         private readonly IWorkflowController _workflowService;
         private readonly IPersistenceProvider _workflowStore;
+        private readonly ItemDbContext _itemDbContext;
 
-        public ItemWorkflowController(ILogger<ItemWorkflowController> logger, IPersistenceProvider workflowStore, IWorkflowController workflowService)
+
+        public ItemWorkflowController(ILogger<ItemWorkflowController> logger,
+                IPersistenceProvider workflowStore,
+                IWorkflowController workflowService,
+                ItemDbContext itemDbContext)
         {
             _workflowService = workflowService;
             _workflowStore = workflowStore;
             _logger = logger;
+            _itemDbContext = itemDbContext;
 
         }
 
@@ -44,6 +51,27 @@ namespace item_workflow.Controllers
         {
             _logger.LogInformation("Starting Workflow: {workflowName}", workflowName);
             var workflowId = _workflowService.StartWorkflow(workflowName, itemData).Result;
+
+            try
+            {
+                itemData.WorkflowId = Guid.Parse(workflowId);
+
+            }
+            catch (ArgumentNullException)
+            {
+                _logger.LogError("The string to be parsed is null.");
+            }
+            catch (FormatException)
+            {
+                _logger.LogError($"Bad format: {workflowId}");
+            }
+            
+
+            _itemDbContext.Item.Update(itemData);
+            _itemDbContext.SaveChanges();
+
+
+
 
             return Ok("WorkflowId: " + workflowId);
         }

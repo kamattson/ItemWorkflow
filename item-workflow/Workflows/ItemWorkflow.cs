@@ -32,9 +32,30 @@ namespace item_workflow.Workflows
 
             var branch2 = builder.CreateBranch()
                 .StartWith<MerchantApproval>()
-                    .Input(step => step.Message, data => "---- Start Merchant Approval Step-------")
+                .WaitFor("MerchantApprove", (data, context) => context.Workflow.Id, data => DateTime.Now)
+                     .Output(data => data.ApprovalStatus, step => step.EventData)
                 .Then<CustomMessage>()
-                    .Input(step => step.Message, data => "-----Complete Merchant Approval Step ------");
+                    .Input(step => step.Message, data => "-----Complete Merchant Approval Step ------")
+                .Parallel()
+                    .Do(then =>
+                        then.StartWith<HazmatApproval>()
+                            .Input(step => step.Message, data => "Item 1.1")
+                            .WaitFor("HazmatApproval", (data, context) => context.Workflow.Id, data => DateTime.Now)
+                                .Output(data => data.ApprovalStatus, step => step.EventData)
+                            .Then<CustomMessage>()
+                                .Input(step => step.Message, data => "-----Complete HazmatApproval Approval Step ------"))
+                    .Do(then =>
+                        then.StartWith<ComplianceApproval>()
+                             .Input(step => step.Message, data => "Item 2.1")
+                             .WaitFor("ComplianceApproval", (data, context) => context.Workflow.Id, data => DateTime.Now)
+                                .Output(data => data.ApprovalStatus, step => step.EventData)
+                             .Then<CustomMessage>()
+                                .Input(step => step.Message, data => "-----Complete ComplianceApproval Approval Step ------"))
+                .Join()
+                    .Then<PricingAutoAssign>()
+                        .Input(step => step.CalcPrice, data => data.Price)
+                        .Input(step => step.Vendor, data => data.Vendor)
+                        .Output(data => data.Price, step => step.CalcPrice);
 
             builder
                 .StartWith(context => ExecutionResult.Next())
@@ -47,5 +68,5 @@ namespace item_workflow.Workflows
 
     }
 
-    
+
 }

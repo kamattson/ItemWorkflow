@@ -17,11 +17,17 @@ using Microsoft.Extensions.Logging;
 using WorkflowCore.Interface;
 using WorkflowCore.Persistence.SqlServer;
 using Serilog;
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Http;
 
 namespace item_workflow
 {
     public class Startup
     {
+
+        private string _connection = null;
+        private string _wfconnection = null;
+
         public Startup(IConfiguration configuration)
         {
             Log.Information("[Startup] (CTOR)");
@@ -34,17 +40,24 @@ namespace item_workflow
         public void ConfigureServices(IServiceCollection services)
         {
 
-            Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            var builder = new SqlConnectionStringBuilder(
+                Configuration.GetConnectionString("TestDB"));
+                builder.Password = Configuration["WFPass"];
+            _connection = builder.ConnectionString;
 
+            var wfcbulder = new SqlConnectionStringBuilder(
+                Configuration.GetConnectionString("WorkflowDB"));
+                wfcbulder.Password = Configuration["WFPass"];
+            _wfconnection = wfcbulder.ConnectionString;
 
-            services.AddDbContext<TestDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TestDB")));
+            services.AddDbContext<ItemDbContext>(options => options.UseSqlServer(_connection));
             services.AddControllers();
        
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
-            services.AddWorkflow(x => x.UseSqlServer(Configuration.GetConnectionString("WorkflowDB"), true, true));
+            services.AddWorkflow(x => x.UseSqlServer(_wfconnection, true, true));
             //services.AddWorkflow();
 
             services.AddSwaggerGen();
@@ -53,6 +66,7 @@ namespace item_workflow
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,8 +97,9 @@ namespace item_workflow
             host.RegisterWorkflow<ItemWorkflow, Item>();
             host.Start();
 
-            Log.Information("[Workflow Registered] (ItemWorkflow)");
+            string configkey = Configuration["ItemWF:ServiceApiKey"];
 
+            Log.Information("[Workflow Registered] (ItemWorkflow) {configkey}", configkey);
             //var initialData = new Item();
             //var workflowId = host.StartWorkflow("ItemWorkflow", 1, initialData).Result;
 

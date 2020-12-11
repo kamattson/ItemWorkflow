@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>item_workflow</RootNamespace>
+    <UserSecretsId>3f922951-b7eb-41d2-864d-a7faef62f9f8</UserSecretsId>
   </PropertyGroup>
 
 
