@@ -22,7 +22,7 @@ namespace item_workflow
               .MinimumLevel.Verbose()
               .Enrich.FromLogContext()
               .WriteTo.Console(LogEventLevel.Information)
-              .WriteTo.RollingFile("Logs/MainLog-{Date}.log", LogEventLevel.Verbose)
+              //.WriteTo.RollingFile("Logs/MainLog-{Date}.log", LogEventLevel.Verbose)
               .CreateLogger();
 
             Log.Information("[MAIN] Starting Application.");

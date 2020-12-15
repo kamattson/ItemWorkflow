@@ -19,6 +19,8 @@ using WorkflowCore.Persistence.SqlServer;
 using Serilog;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Http;
+using item_workflow.Middleware;
+using item_workflow.Steps;
 
 namespace item_workflow
 {
@@ -59,6 +61,20 @@ namespace item_workflow
 
             services.AddWorkflow(x => x.UseSqlServer(_wfconnection, true, true));
             //services.AddWorkflow();
+
+            services.AddWorkflowStepMiddleware<LogCorrelationStepMiddleware>();
+
+            // Add some pre workflow middleware
+            // This middleware will run before the workflow starts
+            services.AddWorkflowMiddleware<AddDescriptionWorkflowMiddleware>();
+
+            // Add some post workflow middleware
+            // This middleware will run after the workflow completes
+            services.AddWorkflowMiddleware<PrintWorkflowSummaryMiddleware>();
+
+            services.AddTransient<NewItem>();
+            services.AddTransient<ProcessApproval>();
+            services.AddTransient<PricingAutoAssign>();
 
             services.AddSwaggerGen();
         }
@@ -102,7 +118,6 @@ namespace item_workflow
             Log.Information("[Workflow Registered] (ItemWorkflow) {configkey}", configkey);
             //var initialData = new Item();
             //var workflowId = host.StartWorkflow("ItemWorkflow", 1, initialData).Result;
-
 
         }
     }

@@ -21,10 +21,10 @@ namespace item_workflow.Controllers
         }
 
         [HttpPost("{eventName}/{eventKey}")]
-        public async Task<IActionResult> Post(string eventName, string eventKey, [FromBody] Item itemData)
+        public async Task<IActionResult> Post(string eventName, string eventKey, [FromBody] Approval approvalData)
         {
             _logger.LogInformation("Event: {eventName}, {eventKey}", eventName, eventKey);
-            await _workflowService.PublishEvent(eventName, eventKey, itemData.ApprovalStatus);
+            await _workflowService.PublishEvent(eventName, eventKey, approvalData.ApprovalStatus);
             return Ok();
         }
 

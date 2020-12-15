@@ -20,49 +20,54 @@ namespace item_workflow.Workflows
 
             Log.Information("[Workflow] Build: {Id}", Id);
 
-            var branch1 = builder.CreateBranch()
-                .StartWith<PricingAutoAssign>()
-                    .Input(step => step.CalcPrice, data => data.Price)
-                    .Input(step => step.Vendor, data => data.Vendor)
-                    .Output(data => data.Price, step => step.CalcPrice)
+            // Workflow branch executes DropShip items
+            var dropshipBranch = builder.CreateBranch()
+                .StartWith(context => ExecutionResult.Next())
+                .Then<NotifyApprovers>()
                 .WaitFor("ApprovePCT", (data, context) => context.Workflow.Id, data => DateTime.Now)
-                     .Output(data => data.ApprovalStatus, step => step.EventData)
+                .Then<PricingAutoAssign>()
+                    .Input(step => step.CalcPrice, data => data.Price)
+                    .Input(step => step.item, data => data)
+                    .Output(data => data.Price, step => step.CalcPrice)
                 .Then<CustomMessage>()
                     .Input(step => step.Message, data => "The vendor from the event is " + data.Vendor);
 
-            var branch2 = builder.CreateBranch()
+            // Workflow branch executes RSC items and 
+            var rscBranch = builder.CreateBranch()
                 .StartWith<MerchantApproval>()
                 .WaitFor("MerchantApprove", (data, context) => context.Workflow.Id, data => DateTime.Now)
-                     .Output(data => data.ApprovalStatus, step => step.EventData)
                 .Then<CustomMessage>()
                     .Input(step => step.Message, data => "-----Complete Merchant Approval Step ------")
                 .Parallel()
                     .Do(then =>
                         then.StartWith<HazmatApproval>()
                             .Input(step => step.Message, data => "Item 1.1")
-                            .WaitFor("HazmatApproval", (data, context) => context.Workflow.Id, data => DateTime.Now)
-                                .Output(data => data.ApprovalStatus, step => step.EventData)
+                            .If(data => data.HazardousFlag == "Y").Do(then => then
+                                .WaitFor("HazmatApproval", (data, context) => context.Workflow.Id, data => DateTime.Now))
                             .Then<CustomMessage>()
                                 .Input(step => step.Message, data => "-----Complete HazmatApproval Approval Step ------"))
                     .Do(then =>
                         then.StartWith<ComplianceApproval>()
                              .Input(step => step.Message, data => "Item 2.1")
                              .WaitFor("ComplianceApproval", (data, context) => context.Workflow.Id, data => DateTime.Now)
-                                .Output(data => data.ApprovalStatus, step => step.EventData)
                              .Then<CustomMessage>()
                                 .Input(step => step.Message, data => "-----Complete ComplianceApproval Approval Step ------"))
                 .Join()
                     .Then<PricingAutoAssign>()
                         .Input(step => step.CalcPrice, data => data.Price)
-                        .Input(step => step.Vendor, data => data.Vendor)
+                        .Input(step => step.item, data => data )
                         .Output(data => data.Price, step => step.CalcPrice);
 
             builder
-                .StartWith(context => ExecutionResult.Next())
+                .StartWith<NewItem>()
+                    // Associate the WorkflowID with the item in workflow database
+                    .Input(step => step.item, data => data)
+                    // This will set the item data in the workflow process so we can refer to it later.
+                    .Output(data => data.WorkflowId, step => step.item.WorkflowId)
                 .Decide(data => data.ArticleSourceFlag)
-                    .Branch((data, outcome) => data.ArticleSourceFlag == "A", branch1)
-                    .Branch((data, outcome) => data.ArticleSourceFlag == "B", branch2)
-                    .Branch((data, outcome) => data.ArticleSourceFlag == "D", branch2);
+                    .Branch((data, outcome) => data.ArticleSourceFlag == "A", dropshipBranch)
+                    .Branch((data, outcome) => data.ArticleSourceFlag == "B", rscBranch)
+                    .Branch((data, outcome) => data.ArticleSourceFlag == "D", rscBranch);
 
         }
 

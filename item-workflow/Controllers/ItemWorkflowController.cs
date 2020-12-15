@@ -38,13 +38,9 @@ namespace item_workflow.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var result = await _workflowStore.GetWorkflowInstance(id);
-       
             _logger.LogInformation("Workflow Instance: {result}", result);
-
             return Ok("Workflow Instance: {result}" + result);
         }
-
-
 
         [HttpPost("{workflowName}")]
         public IActionResult Post(string workflowName, [FromBody] Item itemData)
@@ -65,13 +61,14 @@ namespace item_workflow.Controllers
             {
                 _logger.LogError($"Bad format: {workflowId}");
             }
+
+            // Maybe check for duplicates or already existing 
+            //var item = _itemDbContext.Item
+            //    .Single(i => i.ProductTitle == itemData.ProductTitle && i.Vendor == itemData.Vendor  );
+
             
-
-            _itemDbContext.Item.Update(itemData);
+            _itemDbContext.Item.Add(itemData);
             _itemDbContext.SaveChanges();
-
-
-
 
             return Ok("WorkflowId: " + workflowId);
         }

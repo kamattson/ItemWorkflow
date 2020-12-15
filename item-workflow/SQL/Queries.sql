@@ -1,5 +1,7 @@
 use WorkflowCore
 
+use testwfdb
+
 SELECT *
 FROM
     INFORMATION_SCHEMA.TABLES;

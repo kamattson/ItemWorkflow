@@ -22,12 +22,12 @@ namespace item_workflow.tests
         [Test]
         public void NUnit_workflow_test_sample()
         {
-            var workflowId = StartWorkflow(new Item() { Name = "foo",  Vendor = "skil" });
+            var workflowId = StartWorkflow(new Item() { ProductTitle = "foo",  Vendor = "skil" });
             WaitForWorkflowToComplete(workflowId, TimeSpan.FromSeconds(30));
 
             GetStatus(workflowId).Should().Be(WorkflowStatus.Complete);
             UnhandledStepErrors.Count.Should().Be(0);
-            GetData(workflowId).Name.Should().Be("foo");
+            GetData(workflowId).ProductTitle.Should().Be("foo");
             
         }
 

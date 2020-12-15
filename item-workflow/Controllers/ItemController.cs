@@ -13,16 +13,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace item_workflow.Controllers
 {
-
-
     [ApiController]
     [Route("[controller]")]
-    public class TestController : ControllerBase
+    public class ItemController : ControllerBase
     {
-        private readonly ILogger<TestController> _logger;
+        private readonly ILogger<ItemController> _logger;
         private readonly ItemDbContext _itemDbContext;
 
-        public TestController(ILogger<TestController> logger, ItemDbContext itemDbContext)
+        public ItemController(ILogger<ItemController> logger, ItemDbContext itemDbContext)
         {
             _logger = logger;
             _itemDbContext = itemDbContext;
@@ -31,16 +29,9 @@ namespace item_workflow.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            _logger.LogInformation("this is hello - ----------");
-
-            return Ok(await _itemDbContext.Item.ToListAsync());
-
-            //return "hello";
+            _logger.LogInformation("In TestController.Get(), Looking up Items....");
+            return Ok(await _itemDbContext.Item.Include(a => a.Approvals).ToListAsync());
         }
-
-
-
-     
 
     }
 

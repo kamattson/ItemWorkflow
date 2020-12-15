@@ -22,5 +22,6 @@
     <Folder Include="Workflows\" />
     <Folder Include="Model\" />
     <Folder Include="Database\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 </Project>
