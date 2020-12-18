@@ -8,6 +8,8 @@ using WorkflowCore.Models;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using WorkflowCore.Users.Models;
 
 namespace item_workflow.Controllers
 {
@@ -45,6 +47,40 @@ namespace item_workflow.Controllers
             var result = await _workflowStore.GetWorkflowInstance(id);
             return Json(result);
         }
+
+        [HttpGet("openuseractions/{workflowId}", Name = nameof(GetOpenUserActions))]
+        public IEnumerable<OpenUserAction> GetOpenUserActions(string workflowId)
+        {
+            var workflow = _workflowHost.PersistenceStore.GetWorkflowInstance(workflowId).Result;
+            return workflow.GetOpenUserActions();
+        }
+
+        [HttpGet("events/{workflowId}", Name = nameof(GetOpenEvents))]
+        public async Task<IActionResult> GetOpenEvents(string workflowId)
+        {
+            var workflow = await _workflowStore.GetWorkflowInstance(workflowId);
+            List<string> result = new List<string>();
+
+            var pointers = workflow.ExecutionPointers.Where(x => !x.EventPublished);
+            foreach (var pointer in pointers)
+            {
+
+                _logger.LogInformation("Event:" + pointer.EventName);
+                //var item = new OpenEvenAction()
+                //{
+                //    Key = pointer.EventKey,
+                //    Prompt = Convert.ToString(pointer.ExtensionAttributes[UserTask.ExtPrompt]),
+                //    AssignedPrincipal = Convert.ToString(pointer.ExtensionAttributes[UserTask.ExtAssignPrincipal]),
+                //    Options = (pointer.ExtensionAttributes[UserTask.ExtUserOptions] as Dictionary<string, string>)
+                //};
+
+                result.Add(pointer.EventName);
+            }
+
+            return Json(result);
+        }
+
+
 
         [HttpPost("{id}")]
         [HttpPost("{id}/{version}")]

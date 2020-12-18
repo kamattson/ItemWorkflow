@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "e62acd5b-409a-4c8d-ae3f-fd152cca03dc",
+		"name": "ACE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Post New Item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\n\t\"itemId\": 1,\n\t\"name\": \"Saw\",\n\t\"articleSourceFlag\": \"B\",\n\t\"vendor\": \"Craftsman\",\n\t\"lastUpdateDate\": \"2020-12-08T00:50:33.987\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/itemworkflow/ItemWorkflow",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"itemworkflow",
+						"ItemWorkflow"
+					]
+				},
+				"description": "New item in NIO is ready for workflow."
+			},
+			"response": []
+		},
+		{
+			"name": "Approve PCT event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"approvalStatus\": \"A\",\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/events/ApprovePCT/909b23ce-e7e8-4f84-933c-039712e6f4f9",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"events",
+						"ApprovePCT",
+						"909b23ce-e7e8-4f84-933c-039712e6f4f9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View New Item Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/api/dashboard/ced5fe38-b361-4b37-abf8-06a44443e14e",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"dashboard",
+						"ced5fe38-b361-4b37-abf8-06a44443e14e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Merchant Approval",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"approvalStatus\": \"A\",\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/events/MerchantApprove/a047f3eb-dd64-46c6-bd9b-c6c3a85c9eda",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"events",
+						"MerchantApprove",
+						"a047f3eb-dd64-46c6-bd9b-c6c3a85c9eda"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
