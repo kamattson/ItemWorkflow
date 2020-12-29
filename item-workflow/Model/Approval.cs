@@ -11,7 +11,9 @@ namespace item_workflow.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ApprovalId { get; set; }
-        Item item { get; set; }
+        
+        [ForeignKey("NIO_request_ID")]
+        public virtual Item Item { get; set; }
         public string ApprovalStatus { get; set; }
         public string ApproverUser { get; set; }
         public string ApprovalTypeCode { get; set; }

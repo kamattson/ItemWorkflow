@@ -4,7 +4,7 @@ GO
 CREATE TABLE Workflow_Approval
 (
     ApprovalId [INT] NOT NULL IDENTITY PRIMARY KEY,
-    ItemId [INT] NOT NULL REFERENCES Item (Id), 
+    NIO_Request_ID [INT] NOT NULL REFERENCES Workflow_Header (NIO_request_ID), 
     ApprovalStatus [NVARCHAR] (1) NOT NULL,
     ApproverUser [NVARCHAR] (50) NOT NULL,
     ApprovalTypeCode [NVARCHAR] (20),

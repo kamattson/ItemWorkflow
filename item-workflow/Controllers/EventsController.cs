@@ -49,8 +49,6 @@ namespace item_workflow.Controllers
                 _logger.LogInformation("Choosing key:" + key + " value:" + value);
 
             }
-
-
             
             await _host.PublishUserAction(key, user, option);
             return Ok();

@@ -1,6 +1,10 @@
 use WorkflowCore
 
+drop database WorkflowCore
+
 use testwfdb
+
+use master
 
 SELECT *
 FROM

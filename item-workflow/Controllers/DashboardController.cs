@@ -33,14 +33,6 @@ namespace item_workflow.Controllers
 
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get(WorkflowStatus? status, string type, DateTime? createdFrom, DateTime? createdTo, int skip, int take)
-        //{
-            // this method is obsolete.  Need to obtain the data ourselves
-            //var result = await _workflowStore.GetWorkflowInstances(status, type, createdFrom, createdTo, skip, take);
-            //return Json(result.ToList());
-        //}
-
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -49,10 +41,10 @@ namespace item_workflow.Controllers
         }
 
         [HttpGet("openuseractions/{workflowId}", Name = nameof(GetOpenUserActions))]
-        public IEnumerable<OpenUserAction> GetOpenUserActions(string workflowId)
+        public IActionResult GetOpenUserActions(string workflowId)
         {
-            var workflow = _workflowHost.PersistenceStore.GetWorkflowInstance(workflowId).Result;
-            return workflow.GetOpenUserActions();
+            var openItems = _workflowHost.GetOpenUserActions(workflowId);
+            return Ok(openItems);
         }
 
         [HttpGet("events/{workflowId}", Name = nameof(GetOpenEvents))]
@@ -79,7 +71,6 @@ namespace item_workflow.Controllers
 
             return Json(result);
         }
-
 
 
         [HttpPost("{id}")]

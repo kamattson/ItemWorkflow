@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace item_workflow.Model
 {
+    [Table("Workflow_Header")]
     public class Item
     {
         [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Column("NIO_request_ID")]
+        public int RequestId { get; set; }
         [Column("workflow_id")]
         public Guid WorkflowId { get; set; }
         public string ProductTitle { get; set; }

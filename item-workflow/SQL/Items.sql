@@ -1,11 +1,11 @@
 use testwfdb
 
-DROP TABLE Item
+DROP TABLE Workflow_Header
 GO
 
-CREATE TABLE Item
+CREATE TABLE Workflow_Header 
 (
-    Id [INT] NOT NULL IDENTITY PRIMARY KEY ,
+    NIO_request_ID [INT] NOT NULL  PRIMARY KEY ,
     Workflow_ID [UNIQUEIDENTIFIER] NOT NULL, 
     ProductTitle [NVARCHAR] (50) NOT NULL,
     Vendor [NVARCHAR] (50) NOT NULL, 
@@ -15,7 +15,9 @@ CREATE TABLE Item
     LastUpdateDate [Datetime] NOT NULL
 )
 
-INSERT INTO Item
+DELETE FROM Workflow_Header;
+
+INSERT INTO Workflow_Header
     ([Id], [Workflow_ID], [ProductTitle], [ArticleSourceFlag], [Vendor],  [Price], [HazardousFlag],  [LastUpdateDate])
 VALUES
     ( 1, (select cast(0x0 as uniqueidentifier)), N'Saw', N'A', N'Craftsman', 0, '', CURRENT_TIMESTAMP),
@@ -26,8 +28,8 @@ GO
 
 
 SELECT COUNT(*) as ItemCount
-FROM dbo.Item;
+FROM dbo.Workflow_Header;
 
 SELECT i.id, i.Workflow_ID, i.ProductTitle, i.ArticleSourceFlag, i.Vendor, i.Price, i.HazardousFlag, i.LastUpdateDate
-FROM dbo.Item as i
+FROM dbo.Workflow_Header as i
 GO

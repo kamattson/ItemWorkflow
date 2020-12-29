@@ -23,6 +23,7 @@ namespace item_workflow.Workflows
             // Workflow branch executes DropShip items
             var dropshipBranch = builder.CreateBranch()
                 .StartWith<NotifyApprovers>()
+                .OnError(WorkflowErrorHandling.Retry, TimeSpan.FromMinutes(10))
                 .WaitFor("ApprovePCT", (data, context) => context.Workflow.Id, data => DateTime.Now)
                 .Then<PricingAutoAssign>()
                     .Input(step => step.CalcPrice, data => data.Price)
@@ -31,15 +32,16 @@ namespace item_workflow.Workflows
                 .Then<CustomMessage>()
                     .Input(step => step.Message, data => "The vendor from the event is " + data.Vendor);
 
-            // Workflow branch executes RSC items and 
+            // Workflow branch executes RSC items  
             var rscBranch = builder.CreateBranch()
                 .StartWith<MerchantApproval>()
                 .Then(context => Log.Logger.Information("---------- Start Merchant Approval Task ------------"))
                     .UserTask("MerchantApprove", data => "username")
-                            .WithOption("Approved", "Approved").Do(then => then
+                            // (Value, Label)
+                            .WithOption("Approve", "Merchant-Approved").Do(then => then
                                 .StartWith(context => Log.Logger.Information("You approved"))
                             )
-                            .WithOption("Denied", "Denied").Do(then => then
+                            .WithOption("Denied", "Merchant-Denied").Do(then => then
                                 .StartWith(context => Log.Logger.Information("You did not approve"))
                             )
                      .Then<CustomMessage>()
